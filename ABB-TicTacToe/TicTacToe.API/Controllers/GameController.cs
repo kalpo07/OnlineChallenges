@@ -107,6 +107,20 @@ namespace TicTacToe.API.Controllers
             }
         }
 
+        [HttpPost("/api/scoreboard/reset")]
+        public ActionResult<ScoreboardDto> ResetScoreboard([FromQuery] Guid id)
+        {
+            try
+            {
+                var scoreboard = _gameService.ResetScoreboard(id);
+                return Ok(scoreboard);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
         [HttpDelete("{id:guid}")]
         public IActionResult DeleteGame(Guid id)
         {

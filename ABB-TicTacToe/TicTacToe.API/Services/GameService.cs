@@ -6,7 +6,12 @@ namespace TicTacToe.API.Services
     {
         private readonly Dictionary<Guid, Game> _games = new();
         private readonly Dictionary<Guid, ScoreboardDto> _scoreboards = new();
-        private readonly Random _random = new();
+        private readonly ComputerPlayerService _computerPlayerService;
+
+        public GameService(ComputerPlayerService computerPlayerService)
+        {
+            _computerPlayerService = computerPlayerService;
+        }
 
         public GameStateResponse CreateGame(GameMode mode)
         {
@@ -38,6 +43,18 @@ namespace TicTacToe.API.Services
         {
             GetGameOrThrow(id);
             return _scoreboards[id];
+        }
+
+        public ScoreboardDto ResetScoreboard(Guid id)
+        {
+            GetGameOrThrow(id);
+
+            var scoreboard = _scoreboards[id];
+            scoreboard.XWins = 0;
+            scoreboard.OWins = 0;
+            scoreboard.Draws = 0;
+
+            return scoreboard;
         }
 
         public bool DeleteGame(Guid id)
@@ -74,11 +91,8 @@ namespace TicTacToe.API.Services
 
             if (game.Status == GameStatus.InProgress && game.Mode == GameMode.VsComputer && game.CurrentTurn != player)
             {
-                var computerMove = PickComputerMove(game);
-                if (computerMove.HasValue)
-                {
-                    ApplyMove(game, computerMove.Value, game.CurrentTurn);
-                }
+                var computerMove = _computerPlayerService.GetBestMove(game.Board);
+                ApplyMove(game, computerMove, game.CurrentTurn);
             }
 
             return ToResponse(game);
@@ -148,20 +162,6 @@ namespace TicTacToe.API.Services
             }
 
             game.CurrentTurn = player == Player.X ? Player.O : Player.X;
-        }
-
-        private int? PickComputerMove(Game game)
-        {
-            var emptyCells = Enumerable.Range(0, 9)
-                .Where(i => string.IsNullOrEmpty(game.Board[i]))
-                .ToList();
-
-            if (emptyCells.Count == 0)
-            {
-                return null;
-            }
-
-            return emptyCells[_random.Next(emptyCells.Count)];
         }
 
         private void UpdateScoreboard(Guid gameId, Player? winner)
