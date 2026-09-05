@@ -9,7 +9,7 @@ export interface Scoreboard {
 }
 
 export interface GameState {
-  gameId: string;
+  id: string;
   board: string[];
   currentTurn: string;
   status: string;
@@ -23,7 +23,7 @@ export interface GameState {
   providedIn: 'root'
 })
 export class GameService {
-  private readonly baseUrl = 'http://localhost:5000/api/game';
+  private readonly baseUrl = 'http://localhost:5292/api/game';
 
   constructor(private readonly http: HttpClient) {}
 

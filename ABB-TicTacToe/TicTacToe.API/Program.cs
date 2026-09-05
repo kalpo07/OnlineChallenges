@@ -1,17 +1,36 @@
+using System.Text.Json.Serialization;
 using TicTacToe.API.Services;
+
+const string AngularClientPolicy = "AngularClient";
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 builder.Services.AddSingleton<GameService>();
 builder.Services.AddSingleton<ComputerPlayerService>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(AngularClientPolicy, policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
+
+app.UseCors(AngularClientPolicy);
 
 app.MapControllers();
 

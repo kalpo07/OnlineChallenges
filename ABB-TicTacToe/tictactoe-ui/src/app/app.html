@@ -79,14 +79,26 @@
 
 <h1>Tic Tac Toe</h1>
 
-@if (!gameStarted) {
+@if (!gameStarted()) {
   <div class="mode-selector">
     <label>
-      <input type="radio" name="mode" value="TwoPlayer" [(ngModel)]="selectedMode" />
+      <input
+        type="radio"
+        name="mode"
+        value="TwoPlayer"
+        [checked]="selectedMode() === 'TwoPlayer'"
+        (change)="selectedMode.set('TwoPlayer')"
+      />
       Two Player
     </label>
     <label>
-      <input type="radio" name="mode" value="VsComputer" [(ngModel)]="selectedMode" />
+      <input
+        type="radio"
+        name="mode"
+        value="VsComputer"
+        [checked]="selectedMode() === 'VsComputer'"
+        (change)="selectedMode.set('VsComputer')"
+      />
       Vs Computer
     </label>
   </div>
@@ -94,23 +106,23 @@
   <button (click)="startGame()">Start Game</button>
 }
 
-@if (gameStarted && gameState) {
+@if (gameStarted() && gameState(); as state) {
   <div class="status">
-    @if (gameState.status === 'InProgress') {
-      <span>Current turn: {{ gameState.currentTurn }}</span>
-    } @else if (gameState.status === 'Won') {
-      <span>{{ gameState.winner }} wins!</span>
-    } @else if (gameState.status === 'Draw') {
+    @if (state.status === 'InProgress') {
+      <span>Current turn: {{ state.currentTurn }}</span>
+    } @else if (state.status === 'Won') {
+      <span>{{ state.winner }} wins!</span>
+    } @else if (state.status === 'Draw') {
       <span>It's a draw!</span>
     }
   </div>
 
   <div class="board">
-    @for (cell of gameState.board; track $index) {
+    @for (cell of state.board; track $index) {
       <button
         class="cell"
-        [class.winning]="gameState.winningCells.includes($index)"
-        [disabled]="gameState.status !== 'InProgress' || !!cell"
+        [class.winning]="state.winningCells.includes($index)"
+        [disabled]="state.status !== 'InProgress' || !!cell"
         (click)="makeMove($index)"
       >
         {{ cell }}
@@ -119,15 +131,15 @@
   </div>
 
   <div class="actions">
-    @if (gameState.canUndo) {
+    @if (state.canUndo) {
       <button (click)="undoMove()">Undo</button>
     }
     <button (click)="resetGame()">Reset</button>
   </div>
 
   <div class="scoreboard">
-    <span>X Wins: {{ gameState.scoreboard.xWins }}</span>
-    <span>O Wins: {{ gameState.scoreboard.oWins }}</span>
-    <span>Draws: {{ gameState.scoreboard.draws }}</span>
+    <span>X Wins: {{ state.scoreboard.xWins }}</span>
+    <span>O Wins: {{ state.scoreboard.oWins }}</span>
+    <span>Draws: {{ state.scoreboard.draws }}</span>
   </div>
 }

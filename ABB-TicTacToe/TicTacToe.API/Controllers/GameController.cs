@@ -18,8 +18,15 @@ namespace TicTacToe.API.Controllers
         [HttpPost("start")]
         public ActionResult<GameStateResponse> StartGame([FromBody] StartGameRequest request)
         {
-            var response = _gameService.CreateGame(request.Mode);
-            return Ok(response);
+            try
+            {
+                var response = _gameService.CreateGame(request.Mode);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id:guid}")]

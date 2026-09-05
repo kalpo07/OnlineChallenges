@@ -1,67 +1,69 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { GameService, GameState } from './game.service';
 
 @Component({
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',
 })
 export class App {
-  gameState: GameState | null = null;
-  gameId: string | null = null;
-  selectedMode = 'TwoPlayer';
-  gameStarted = false;
+  readonly gameState = signal<GameState | null>(null);
+  readonly gameId = signal<string | null>(null);
+  readonly selectedMode = signal('TwoPlayer');
+  readonly gameStarted = signal(false);
 
   constructor(private readonly gameService: GameService) {}
 
   startGame(): void {
-    this.gameService.startGame(this.selectedMode).subscribe((state) => {
-      this.gameId = state.gameId;
-      this.gameState = state;
-      this.gameStarted = true;
+    this.gameService.startGame(this.selectedMode()).subscribe((state) => {
+      this.gameId.set(state.id);
+      this.gameState.set(state);
+      this.gameStarted.set(true);
     });
   }
 
   makeMove(cellIndex: number): void {
-    if (!this.gameId || !this.gameState) {
+    const id = this.gameId();
+    const state = this.gameState();
+
+    if (!id || !state) {
       return;
     }
 
-    if (this.gameState.status !== 'InProgress') {
+    if (state.status !== 'InProgress') {
       return;
     }
 
-    if (this.gameState.board[cellIndex]) {
+    if (state.board[cellIndex]) {
       return;
     }
 
-    this.gameService
-      .makeMove(this.gameId, cellIndex, this.gameState.currentTurn)
-      .subscribe((state) => {
-        this.gameState = state;
-      });
+    this.gameService.makeMove(id, cellIndex, state.currentTurn).subscribe((newState) => {
+      this.gameState.set(newState);
+    });
   }
 
   undoMove(): void {
-    if (!this.gameId) {
+    const id = this.gameId();
+    if (!id) {
       return;
     }
 
-    this.gameService.undoMove(this.gameId).subscribe((state) => {
-      this.gameState = state;
+    this.gameService.undoMove(id).subscribe((state) => {
+      this.gameState.set(state);
     });
   }
 
   resetGame(): void {
-    if (!this.gameId) {
+    const id = this.gameId();
+    if (!id) {
       return;
     }
 
-    this.gameService.resetGame(this.gameId).subscribe((state) => {
-      this.gameState = state;
+    this.gameService.resetGame(id).subscribe((state) => {
+      this.gameState.set(state);
     });
   }
 }
