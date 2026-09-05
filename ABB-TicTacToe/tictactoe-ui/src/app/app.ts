@@ -67,6 +67,12 @@ export class App {
     });
   }
 
+  goBack(): void {
+    this.gameStarted.set(false);
+    this.gameState.set(null);
+    this.gameId.set(null);
+  }
+
   movePlayer(moveNumber: number): string {
     return moveNumber % 2 === 0 ? 'X' : 'O';
   }
