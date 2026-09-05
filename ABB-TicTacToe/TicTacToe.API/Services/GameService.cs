@@ -89,6 +89,8 @@ namespace TicTacToe.API.Services
 
             ApplyMove(game, cellIndex, player);
 
+            // Auto-play the computer's response immediately so the frontend always
+            // ends up looking at a board where it's the human's turn again.
             if (game.Status == GameStatus.InProgress && game.Mode == GameMode.VsComputer && game.CurrentTurn != player)
             {
                 var computerMove = _computerPlayerService.GetBestMove(game.Board);
@@ -112,6 +114,9 @@ namespace TicTacToe.API.Services
                 throw new InvalidOperationException("No moves to undo.");
             }
 
+            // In VsComputer mode, one "human turn" is really two moves on the board
+            // (human + auto-played computer response), so undo must remove both to
+            // avoid leaving the computer's move stranded with no matching human move.
             var movesToUndo = game.Mode == GameMode.VsComputer ? 2 : 1;
 
             for (var i = 0; i < movesToUndo && game.MoveHistory.Count > 0; i++)
@@ -215,6 +220,8 @@ namespace TicTacToe.API.Services
             return game;
         }
 
+        // Maps internal Game state to the DTO sent to the frontend, merging in the
+        // scoreboard (tracked separately, keyed by game id) and the derived CanUndo flag.
         private GameStateResponse ToResponse(Game game)
         {
             _scoreboards.TryGetValue(game.Id, out var scoreboard);

@@ -119,6 +119,8 @@
   <button (click)="startGame()">Start Game</button>
 }
 
+<!-- "as state" reads both signals once and gives the block a non-null local,
+     avoiding repeated gameState() calls and non-null assertions below. -->
 @if (gameStarted() && gameState(); as state) {
   <div class="status">
     @if (state.status === 'InProgress') {

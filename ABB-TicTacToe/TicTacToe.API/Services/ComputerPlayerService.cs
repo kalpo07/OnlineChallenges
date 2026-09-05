@@ -55,6 +55,8 @@ namespace TicTacToe.API.Services
             throw new InvalidOperationException("No empty cells available for a move.");
         }
 
+        // Finds a cell that completes a line for the given mark: used both to find the
+        // computer's own winning move (mark = "O") and to find a move to block (mark = "X").
         private static int? FindWinningMove(string[] board, string mark)
         {
             foreach (var combination in WinningCombinations)

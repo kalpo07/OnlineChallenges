@@ -9,8 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
+        // Without this, enums like GameMode/Player deserialize from numbers only,
+        // so a request body like { "mode": "TwoPlayer" } would fail model binding.
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
+
+// Registered as singletons because game state lives in memory and must persist across requests.
 builder.Services.AddSingleton<GameService>();
 builder.Services.AddSingleton<ComputerPlayerService>();
 

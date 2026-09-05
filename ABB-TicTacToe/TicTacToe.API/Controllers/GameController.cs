@@ -107,6 +107,7 @@ namespace TicTacToe.API.Controllers
             }
         }
 
+        // Absolute route override: this endpoint lives under /api/scoreboard, not /api/game.
         [HttpPost("/api/scoreboard/reset")]
         public ActionResult<ScoreboardDto> ResetScoreboard([FromQuery] Guid id)
         {

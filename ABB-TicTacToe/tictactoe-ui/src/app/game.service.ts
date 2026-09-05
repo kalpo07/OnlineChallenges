@@ -24,6 +24,8 @@ export interface GameState {
   providedIn: 'root'
 })
 export class GameService {
+  // apiRoot is shared because the scoreboard-reset endpoint lives under /api/scoreboard,
+  // not under /api/game like every other call here.
   private readonly apiRoot = 'http://localhost:5292/api';
   private readonly baseUrl = `${this.apiRoot}/game`;
 
