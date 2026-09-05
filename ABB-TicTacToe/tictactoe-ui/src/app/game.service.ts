@@ -15,6 +15,7 @@ export interface GameState {
   status: string;
   winner: string | null;
   winningCells: number[];
+  moveHistory: number[];
   canUndo: boolean;
   scoreboard: Scoreboard;
 }
@@ -23,7 +24,8 @@ export interface GameState {
   providedIn: 'root'
 })
 export class GameService {
-  private readonly baseUrl = 'http://localhost:5292/api/game';
+  private readonly apiRoot = 'http://localhost:5292/api';
+  private readonly baseUrl = `${this.apiRoot}/game`;
 
   constructor(private readonly http: HttpClient) {}
 
@@ -46,5 +48,9 @@ export class GameService {
 
   resetGame(id: string): Observable<GameState> {
     return this.http.post<GameState>(`${this.baseUrl}/${id}/reset`, {});
+  }
+
+  resetScoreboard(id: string): Observable<Scoreboard> {
+    return this.http.post<Scoreboard>(`${this.apiRoot}/scoreboard/reset?id=${id}`, {});
   }
 }

@@ -66,4 +66,28 @@ export class App {
       this.gameState.set(state);
     });
   }
+
+  movePlayer(moveNumber: number): string {
+    return moveNumber % 2 === 0 ? 'X' : 'O';
+  }
+
+  moveRow(cellIndex: number): number {
+    return Math.floor(cellIndex / 3) + 1;
+  }
+
+  moveCol(cellIndex: number): number {
+    return (cellIndex % 3) + 1;
+  }
+
+  resetScoreboard(): void {
+    const id = this.gameId();
+    const state = this.gameState();
+    if (!id || !state) {
+      return;
+    }
+
+    this.gameService.resetScoreboard(id).subscribe((scoreboard) => {
+      this.gameState.set({ ...state, scoreboard });
+    });
+  }
 }

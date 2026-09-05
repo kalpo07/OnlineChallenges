@@ -70,6 +70,19 @@
     font-size: 0.95rem;
   }
 
+  .move-history {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+  }
+
+  .move-history th,
+  .move-history td {
+    border: 1px solid #ccc;
+    padding: 0.4rem 0.6rem;
+    text-align: center;
+  }
+
   button {
     padding: 0.5rem 1rem;
     font-size: 1rem;
@@ -142,4 +155,29 @@
     <span>O Wins: {{ state.scoreboard.oWins }}</span>
     <span>Draws: {{ state.scoreboard.draws }}</span>
   </div>
+
+  <div class="actions">
+    <button (click)="resetScoreboard()">Reset Scoreboard</button>
+  </div>
+
+  @if (state.moveHistory.length > 0) {
+    <table class="move-history">
+      <thead>
+        <tr>
+          <th>Move #</th>
+          <th>Player</th>
+          <th>Position</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (cellIndex of state.moveHistory; track $index) {
+          <tr>
+            <td>{{ $index + 1 }}</td>
+            <td>{{ movePlayer($index) }}</td>
+            <td>Row {{ moveRow(cellIndex) }}, Col {{ moveCol(cellIndex) }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
 }
