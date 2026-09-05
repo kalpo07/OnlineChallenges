@@ -29,7 +29,6 @@ A browser-based Tic Tac Toe game with two modes: two-player (same device) and pl
 │ Controllers/GameController.cs │
 │ Services/GameService.cs │
 │ Services/ComputerPlayerService.cs │
-│ Services/ScoreboardService.cs │
 │ Models/Game.cs │
 │ Models/GameStateResponse.cs │
 └──────────────┬──────────────────────────┘
@@ -70,6 +69,7 @@ Priority order: Win → Block opponent's win → Take centre → Take a corner �
 | POST | `/api/game/{id}/undo` | Undo last move |
 | POST | `/api/game/{id}/reset` | Reset board, keep scores |
 | GET | `/api/game/{id}/scoreboard` | Get win/draw counts |
+| POST | `/api/scoreboard/reset?id={guid}` | Reset scoreboard to zero |
 | DELETE | `/api/game/{id}` | End session |
 
 ---
@@ -101,8 +101,7 @@ TicTacToe.API/
 │ └── GameController.cs
 ├── Services/
 │ ├── GameService.cs
-│ ├── ComputerPlayerService.cs
-│ └── ScoreboardService.cs
+│ └── ComputerPlayerService.cs
 ├── Models/
 │ ├── Game.cs
 │ └── GameStateResponse.cs
