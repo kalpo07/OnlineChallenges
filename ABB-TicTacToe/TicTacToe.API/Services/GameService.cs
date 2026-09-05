@@ -34,6 +34,18 @@ namespace TicTacToe.API.Services
             return ToResponse(game);
         }
 
+        public ScoreboardDto GetScoreboard(Guid id)
+        {
+            GetGameOrThrow(id);
+            return _scoreboards[id];
+        }
+
+        public bool DeleteGame(Guid id)
+        {
+            _scoreboards.Remove(id);
+            return _games.Remove(id);
+        }
+
         public GameStateResponse MakeMove(Guid id, int cellIndex, Player player)
         {
             var game = GetGameOrThrow(id);
