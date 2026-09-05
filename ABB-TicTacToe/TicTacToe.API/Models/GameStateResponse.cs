@@ -10,6 +10,8 @@ namespace TicTacToe.API.Models
         public Player? Winner { get; set; }
         public int[] WinningCells { get; set; } = Array.Empty<int>();
         public List<int> MoveHistory { get; set; } = new List<int>();
+        public bool CanUndo { get; set; }
+        public ScoreboardDto Scoreboard { get; set; } = new ScoreboardDto();
     }
 
     public class ScoreboardDto

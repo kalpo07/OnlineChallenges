@@ -215,8 +215,10 @@ namespace TicTacToe.API.Services
             return game;
         }
 
-        private static GameStateResponse ToResponse(Game game)
+        private GameStateResponse ToResponse(Game game)
         {
+            _scoreboards.TryGetValue(game.Id, out var scoreboard);
+
             return new GameStateResponse
             {
                 Id = game.Id,
@@ -226,7 +228,9 @@ namespace TicTacToe.API.Services
                 Status = game.Status,
                 Winner = game.Winner,
                 WinningCells = game.WinningCells,
-                MoveHistory = game.MoveHistory
+                MoveHistory = game.MoveHistory,
+                CanUndo = game.Status == GameStatus.InProgress && game.MoveHistory.Count > 0,
+                Scoreboard = scoreboard ?? new ScoreboardDto()
             };
         }
     }
