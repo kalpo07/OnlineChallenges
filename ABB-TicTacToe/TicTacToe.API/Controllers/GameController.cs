@@ -128,5 +128,8 @@ namespace TicTacToe.API.Controllers
             _gameService.DeleteGame(id);
             return NoContent();
         }
+
+        [HttpGet("health")]
+        public IActionResult Health() => Ok("Healthy");
     }
 }
